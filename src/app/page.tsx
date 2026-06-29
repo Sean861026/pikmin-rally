@@ -1,65 +1,149 @@
-import Image from "next/image";
+'use client'
+
+import { useEffect, useState, useCallback, useRef } from 'react'
+import dynamic from 'next/dynamic'
+import { MapPin, RefreshCw } from 'lucide-react'
+import type { MushroomEvent } from '@/types'
+import CreateEventModal from '@/components/CreateEventModal'
+import EventDetailModal from '@/components/EventDetailModal'
+
+type LeafletMap = {
+  remove: () => void
+  containerPointToLatLng: (point: [number, number]) => { lat: number; lng: number }
+}
+
+const Map = dynamic(() => import('@/components/Map'), { ssr: false })
+
+const DEFAULT_CENTER: [number, number] = [25.0478, 121.5318]
 
 export default function Home() {
+  const [center, setCenter] = useState<[number, number]>(DEFAULT_CENTER)
+  const [events, setEvents] = useState<MushroomEvent[]>([])
+  const [pickingLocation, setPickingLocation] = useState(false)
+  const [createPos, setCreatePos] = useState<{ lat: number; lng: number } | null>(null)
+  const [selectedEvent, setSelectedEvent] = useState<MushroomEvent | null>(null)
+  const [loading, setLoading] = useState(false)
+  const mapInstanceRef = useRef<LeafletMap | null>(null)
+
+  const fetchEvents = useCallback(async () => {
+    setLoading(true)
+    try {
+      const { supabase } = await import('@/lib/supabase')
+      const { data } = await supabase
+        .from('mushroom_events')
+        .select(`*, join_count:event_joins(count)`)
+        .neq('status', 'done')
+        .order('scheduled_at', { ascending: true })
+      if (data) {
+        setEvents(
+          data.map((e) => ({
+            ...e,
+            join_count: Array.isArray(e.join_count) ? (e.join_count[0] as { count: number })?.count ?? 0 : 0,
+          }))
+        )
+      }
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchEvents()
+    navigator.geolocation?.getCurrentPosition((pos) => {
+      setCenter([pos.coords.latitude, pos.coords.longitude])
+    })
+  }, [fetchEvents])
+
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const map = mapInstanceRef.current
+    if (!map) return
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    const latlng = map.containerPointToLatLng([x, y])
+    setCreatePos({ lat: latlng.lat, lng: latlng.lng })
+    setPickingLocation(false)
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <main className="flex flex-col h-screen bg-gray-50">
+      <header className="bg-green-600 text-white px-4 py-3 flex items-center justify-between shadow-md" style={{ zIndex: 1000 }}>
+        <div className="flex items-center gap-2">
+          <span className="text-2xl">🍄</span>
+          <div>
+            <h1 className="font-bold text-base leading-tight">皮克敏揪人</h1>
+            <p className="text-xs text-green-200">找附近的玩家一起打蘑菇</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={fetchEvents}
+            className="p-2 rounded-full hover:bg-green-500 transition"
+          >
+            <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
+          </button>
+          <button
+            onClick={() => setPickingLocation((v) => !v)}
+            className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium transition ${
+              pickingLocation
+                ? 'bg-white text-green-700'
+                : 'bg-green-500 hover:bg-green-400 text-white'
+            }`}
+          >
+            <MapPin size={14} />
+            {pickingLocation ? '點地圖選位置' : '發起揪人'}
+          </button>
+        </div>
+      </header>
+
+      {pickingLocation && (
+        <div className="bg-yellow-50 border-b border-yellow-200 px-4 py-2 text-sm text-yellow-700 text-center" style={{ zIndex: 1000 }}>
+          點選地圖上蘑菇的位置
+        </div>
+      )}
+
+      <div className="flex-1 relative">
+        <Map
+          events={events}
+          center={center}
+          onEventClick={setSelectedEvent}
+          onReady={(map) => { mapInstanceRef.current = map }}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+
+        {/* 選位置用的透明 overlay，蓋在地圖上 */}
+        {pickingLocation && (
+          <div
+            className="absolute inset-0 cursor-crosshair"
+            style={{ zIndex: 1000 }}
+            onClick={handleOverlayClick}
+          />
+        )}
+
+        {events.length > 0 && !pickingLocation && (
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white shadow-lg rounded-full px-4 py-2 text-sm text-gray-600" style={{ zIndex: 500 }}>
+            附近有 <span className="font-bold text-green-600">{events.length}</span> 個揪人活動
+          </div>
+        )}
+      </div>
+
+      {createPos && (
+        <CreateEventModal
+          lat={createPos.lat}
+          lng={createPos.lng}
+          onClose={() => setCreatePos(null)}
+          onCreated={() => {
+            setCreatePos(null)
+            fetchEvents()
+          }}
+        />
+      )}
+      {selectedEvent && (
+        <EventDetailModal
+          event={selectedEvent}
+          onClose={() => setSelectedEvent(null)}
+          onUpdated={fetchEvents}
+        />
+      )}
+    </main>
+  )
 }
