@@ -20,7 +20,7 @@ export function LangProvider({ children }: { children: ReactNode }) {
 
   const toggle = () => {
     setLang((prev) => {
-      const next = prev === 'zh' ? 'en' : 'zh'
+      const next = prev === 'zh' ? 'en' : prev === 'en' ? 'ja' : 'zh'
       localStorage.setItem('lang', next)
       return next
     })

@@ -88,9 +88,9 @@ export default function Home() {
           <button
             onClick={toggle}
             className="px-2 py-1 rounded-full text-xs font-medium bg-green-500 hover:bg-green-400 transition"
-            title="切換語言 / Switch language"
+            title="切換語言 / Switch language / 言語切替"
           >
-            {lang === 'zh' ? 'EN' : '中文'}
+            {lang === 'zh' ? 'EN' : lang === 'en' ? '日本語' : '中文'}
           </button>
           <button onClick={fetchEvents} className="p-2 rounded-full hover:bg-green-500 transition">
             <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />

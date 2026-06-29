@@ -1,4 +1,4 @@
-export type Lang = 'zh' | 'en'
+export type Lang = 'zh' | 'en' | 'ja'
 
 export const t = {
   zh: {
@@ -9,7 +9,6 @@ export const t = {
     pickHint: '點選地圖上蘑菇的位置',
     nearbyEvents: (n: number) => `附近有 ${n} 個揪人活動`,
     refresh: '重新整理',
-    // CreateEventModal
     modalTitle: '🍄 發起揪人',
     nickname: '你的暱稱',
     nicknamePlaceholder: '訓練師名稱',
@@ -21,7 +20,6 @@ export const t = {
     publish: '發布揪人',
     publishing: '發布中...',
     createFailed: '發起失敗，請稍後再試',
-    // EventDetailModal
     spotsLeft: (n: number) => `還差 ${n} 人`,
     full: '已滿',
     organizer: '發起人',
@@ -32,7 +30,6 @@ export const t = {
     joinFailed: '加入失敗，請稍後再試',
     navigate: '用 Google Maps 導航',
     copyLink: '連結已複製！',
-    // Event page
     eventDetail: '活動詳情',
     notFound: '找不到這個活動',
     backToMap: '回到地圖',
@@ -48,7 +45,6 @@ export const t = {
     pickHint: 'Tap the mushroom location on the map',
     nearbyEvents: (n: number) => `${n} rallies nearby`,
     refresh: 'Refresh',
-    // CreateEventModal
     modalTitle: '🍄 New Rally',
     nickname: 'Your nickname',
     nicknamePlaceholder: 'Trainer name',
@@ -60,7 +56,6 @@ export const t = {
     publish: 'Post Rally',
     publishing: 'Posting...',
     createFailed: 'Failed to post. Please try again.',
-    // EventDetailModal
     spotsLeft: (n: number) => `${n} spots left`,
     full: 'Full',
     organizer: 'Organizer',
@@ -71,12 +66,47 @@ export const t = {
     joinFailed: 'Failed to join. Please try again.',
     navigate: 'Navigate with Google Maps',
     copyLink: 'Link copied!',
-    // Event page
     eventDetail: 'Event Detail',
     notFound: 'Event not found',
     backToMap: 'Back to map',
     seeOtherEvents: 'See other events on map →',
     joinEvent: 'Join this rally',
     loading: 'Loading...',
+  },
+  ja: {
+    appName: 'ピクミン集合',
+    appDesc: '近くのプレイヤーとキノコを倒そう',
+    createEvent: '集合を作る',
+    pickLocation: '地図で場所を選択',
+    pickHint: '地図でキノコの場所をタップ',
+    nearbyEvents: (n: number) => `近くに ${n} 件の集合`,
+    refresh: '更新',
+    modalTitle: '🍄 集合を作る',
+    nickname: 'ニックネーム',
+    nicknamePlaceholder: 'トレーナー名',
+    mushroomLevel: 'キノコレベル',
+    maxPlayers: '必要人数',
+    scheduleTime: '集合時間',
+    note: 'メモ（任意）',
+    notePlaceholder: '例：噴水前で集合',
+    publish: '集合を投稿',
+    publishing: '投稿中...',
+    createFailed: '投稿に失敗しました。もう一度お試しください。',
+    spotsLeft: (n: number) => `あと ${n} 人`,
+    full: '満員',
+    organizer: '主催者',
+    joinedPlayers: '参加中のプレイヤー',
+    joinPlaceholder: 'ニックネームを入力して参加',
+    join: '参加',
+    joining: '...',
+    joinFailed: '参加に失敗しました。もう一度お試しください。',
+    navigate: 'Google マップで案内',
+    copyLink: 'リンクをコピーしました！',
+    eventDetail: 'イベント詳細',
+    notFound: 'イベントが見つかりません',
+    backToMap: '地図に戻る',
+    seeOtherEvents: '地図で他のイベントを見る →',
+    joinEvent: 'この集合に参加',
+    loading: '読み込み中...',
   },
 } as const
