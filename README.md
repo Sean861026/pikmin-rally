@@ -4,6 +4,8 @@
 
 **Live App → https://pikmin-rally.vercel.app**
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/sean-hung/pikmin-rally/H78hSXXvfJshM3khtNYdz26eyS9V)
+
 ## 功能
 
 - 在地圖上標記蘑菇位置並發起揪人
