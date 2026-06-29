@@ -5,28 +5,25 @@ import type { Lang } from './i18n'
 
 type LangContextType = {
   lang: Lang
-  toggle: () => void
+  setLang: (lang: Lang) => void
 }
 
-const LangContext = createContext<LangContextType>({ lang: 'zh', toggle: () => {} })
+const LangContext = createContext<LangContextType>({ lang: 'zh', setLang: () => {} })
 
 export function LangProvider({ children }: { children: ReactNode }) {
-  const [lang, setLang] = useState<Lang>('zh')
+  const [lang, setLangState] = useState<Lang>('zh')
 
   useEffect(() => {
     const saved = localStorage.getItem('lang') as Lang | null
-    if (saved === 'zh' || saved === 'en') setLang(saved)
+    if (saved === 'zh' || saved === 'en' || saved === 'ja') setLangState(saved)
   }, [])
 
-  const toggle = () => {
-    setLang((prev) => {
-      const next = prev === 'zh' ? 'en' : prev === 'en' ? 'ja' : 'zh'
-      localStorage.setItem('lang', next)
-      return next
-    })
+  const setLang = (next: Lang) => {
+    localStorage.setItem('lang', next)
+    setLangState(next)
   }
 
-  return <LangContext.Provider value={{ lang, toggle }}>{children}</LangContext.Provider>
+  return <LangContext.Provider value={{ lang, setLang }}>{children}</LangContext.Provider>
 }
 
 export const useLang = () => useContext(LangContext)

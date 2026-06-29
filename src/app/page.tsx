@@ -19,7 +19,7 @@ const Map = dynamic(() => import('@/components/Map'), { ssr: false })
 const DEFAULT_CENTER: [number, number] = [25.0478, 121.5318]
 
 export default function Home() {
-  const { lang, toggle } = useLang()
+  const { lang, setLang } = useLang()
   const T = t[lang]
   const [center, setCenter] = useState<[number, number]>(DEFAULT_CENTER)
   const [events, setEvents] = useState<MushroomEvent[]>([])
@@ -85,13 +85,15 @@ export default function Home() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <button
-            onClick={toggle}
-            className="px-2 py-1 rounded-full text-xs font-medium bg-green-500 hover:bg-green-400 transition"
-            title="切換語言 / Switch language / 言語切替"
+          <select
+            value={lang}
+            onChange={(e) => setLang(e.target.value as 'zh' | 'en' | 'ja')}
+            className="bg-green-500 text-white text-xs font-medium rounded-full px-2 py-1 border-none outline-none cursor-pointer"
           >
-            {lang === 'zh' ? 'EN' : lang === 'en' ? '日本語' : '中文'}
-          </button>
+            <option value="zh">中文</option>
+            <option value="en">EN</option>
+            <option value="ja">日本語</option>
+          </select>
           <button onClick={fetchEvents} className="p-2 rounded-full hover:bg-green-500 transition">
             <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
           </button>
