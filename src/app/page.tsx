@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react'
 import dynamic from 'next/dynamic'
-import { MapPin, RefreshCw } from 'lucide-react'
+import { MapPin, RefreshCw, LocateFixed } from 'lucide-react'
 import type { MushroomEvent } from '@/types'
 import CreateEventModal from '@/components/CreateEventModal'
 import EventDetailModal from '@/components/EventDetailModal'
@@ -69,6 +69,14 @@ export default function Home() {
     })
   }, [fetchEvents])
 
+  const handleLocateMe = () => {
+    navigator.geolocation?.getCurrentPosition((pos) => {
+      const loc: [number, number] = [pos.coords.latitude, pos.coords.longitude]
+      userLocationRef.current = loc
+      setCenter(loc)
+    })
+  }
+
   const filteredEvents = userLocationRef.current
     ? events.filter((ev) => haversine(userLocationRef.current![0], userLocationRef.current![1], ev.lat, ev.lng) <= radius)
     : events
@@ -104,6 +112,9 @@ export default function Home() {
             <option value="en">EN</option>
             <option value="ja">日本語</option>
           </select>
+          <button onClick={handleLocateMe} className="p-2 rounded-full hover:bg-green-500 transition" title={T.locateMe}>
+            <LocateFixed size={16} />
+          </button>
           <button onClick={fetchEvents} className="p-2 rounded-full hover:bg-green-500 transition">
             <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
           </button>
@@ -213,7 +224,12 @@ export default function Home() {
                       </div>
                       <div className="shrink-0 text-right">
                         <p className="text-xs text-gray-500">{time}</p>
-                        <p className="text-xs text-green-600">{event.join_count ?? 0}/{event.max_players} 人</p>
+                        <p className="text-xs text-green-600">{T.players(event.join_count ?? 0, event.max_players)}</p>
+                        {userLocationRef.current && (
+                          <p className="text-xs text-gray-400">
+                            {T.kmAway(haversine(userLocationRef.current[0], userLocationRef.current[1], event.lat, event.lng).toFixed(1))}
+                          </p>
+                        )}
                       </div>
                     </button>
                   </li>

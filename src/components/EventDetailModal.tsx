@@ -44,6 +44,10 @@ export default function EventDetailModal({ event, onClose, onUpdated }: Props) {
   const handleJoin = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!nickname) return
+    if (joins.some((j) => j.player_nickname === nickname)) {
+      alert(T.alreadyJoined)
+      return
+    }
     setLoading(true)
     try {
       const { supabase } = await import('@/lib/supabase')
@@ -101,7 +105,7 @@ export default function EventDetailModal({ event, onClose, onUpdated }: Props) {
           </div>
           <div className="flex items-center gap-2 text-sm text-gray-900">
             <Users size={14} className="text-gray-400" />
-            <span>{T.organizer}：{event.creator_nickname}｜{joins.length}/{event.max_players}</span>
+            <span>{T.organizer}：{event.creator_nickname}｜{T.players(joins.length, event.max_players)}</span>
           </div>
           {event.note && (
             <div className="flex items-center gap-2 text-sm text-gray-900">
