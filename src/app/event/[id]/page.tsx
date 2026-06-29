@@ -77,7 +77,11 @@ export default function EventPage() {
     <main className="flex items-center justify-center h-screen text-gray-400">載入中...</main>
   )
 
-  const localTime = new Date(event.scheduled_at).toLocaleString()
+  const localTime = new Date(event.scheduled_at).toLocaleString(undefined, {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+    timeZoneName: 'short',
+  })
   const spotsLeft = event.max_players - joins.length
   const isFull = spotsLeft <= 0
 

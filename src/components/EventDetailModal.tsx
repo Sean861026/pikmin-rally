@@ -64,7 +64,11 @@ export default function EventDetailModal({ event, onClose, onUpdated }: Props) {
     }
   }
 
-  const localTime = new Date(event.scheduled_at).toLocaleString()
+  const localTime = new Date(event.scheduled_at).toLocaleString(undefined, {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+    timeZoneName: 'short',
+  })
   const spotsLeft = event.max_players - joins.length
   const isFull = spotsLeft <= 0
 
