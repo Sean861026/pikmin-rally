@@ -24,6 +24,7 @@ export default function Home() {
   const [center, setCenter] = useState<[number, number]>(DEFAULT_CENTER)
   const [events, setEvents] = useState<MushroomEvent[]>([])
   const [pickingLocation, setPickingLocation] = useState(false)
+  const [showList, setShowList] = useState(false)
   const [createPos, setCreatePos] = useState<{ lat: number; lng: number } | null>(null)
   const [selectedEvent, setSelectedEvent] = useState<MushroomEvent | null>(null)
   const [loading, setLoading] = useState(false)
@@ -145,11 +146,62 @@ export default function Home() {
         </a>
 
         {events.length > 0 && !pickingLocation && (
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white shadow-lg rounded-full px-4 py-2 text-sm text-gray-600" style={{ zIndex: 500 }}>
+          <button
+            onClick={() => setShowList(true)}
+            className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white shadow-lg rounded-full px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 transition"
+            style={{ zIndex: 500 }}
+          >
             <span className="font-bold text-green-600">{T.nearbyEvents(events.length)}</span>
-          </div>
+            <span className="ml-1 text-gray-400">↑</span>
+          </button>
         )}
       </div>
+
+      {showList && (
+        <div className="fixed inset-0 flex flex-col justify-end" style={{ zIndex: 9999 }}>
+          <div className="absolute inset-0 bg-black/40" onClick={() => setShowList(false)} />
+          <div className="relative bg-white rounded-t-2xl max-h-[70vh] flex flex-col" style={{ color: '#111' }}>
+            <div className="flex items-center justify-between px-5 pt-4 pb-2 border-b">
+              <h2 className="font-bold text-base">{T.nearbyEvents(events.length)}</h2>
+              <button onClick={() => setShowList(false)} className="text-gray-400 hover:text-gray-700 text-xl leading-none">✕</button>
+            </div>
+            <ul className="overflow-y-auto divide-y">
+              {events.map((event) => {
+                const levelColors: Record<number, string> = {
+                  1: 'bg-green-100 text-green-700',
+                  2: 'bg-yellow-100 text-yellow-700',
+                  3: 'bg-orange-100 text-orange-700',
+                  4: 'bg-red-100 text-red-700',
+                  5: 'bg-purple-100 text-purple-700',
+                }
+                const time = new Date(event.scheduled_at).toLocaleString(undefined, {
+                  month: 'short', day: 'numeric',
+                  hour: '2-digit', minute: '2-digit', timeZoneName: 'short',
+                })
+                return (
+                  <li key={event.id}>
+                    <button
+                      className="w-full text-left px-5 py-3 hover:bg-gray-50 transition flex items-center justify-between gap-3"
+                      onClick={() => { setSelectedEvent(event); setShowList(false) }}
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className={`shrink-0 text-xs font-bold px-2 py-0.5 rounded-full ${levelColors[event.mushroom_level] ?? 'bg-gray-100 text-gray-700'}`}>
+                          Lv {event.mushroom_level}
+                        </span>
+                        <span className="text-sm font-medium truncate">{event.creator_nickname}</span>
+                      </div>
+                      <div className="shrink-0 text-right">
+                        <p className="text-xs text-gray-500">{time}</p>
+                        <p className="text-xs text-green-600">{event.join_count ?? 0}/{event.max_players} 人</p>
+                      </div>
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        </div>
+      )}
 
       {createPos && (
         <CreateEventModal
