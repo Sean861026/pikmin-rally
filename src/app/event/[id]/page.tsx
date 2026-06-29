@@ -78,9 +78,8 @@ export default function EventPage() {
   )
 
   const localTime = new Date(event.scheduled_at).toLocaleString(undefined, {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-    timeZoneName: 'short',
+    year: 'numeric', month: 'short', day: 'numeric',
+    hour: '2-digit', minute: '2-digit', timeZoneName: 'short',
   })
   const spotsLeft = event.max_players - joins.length
   const isFull = spotsLeft <= 0
