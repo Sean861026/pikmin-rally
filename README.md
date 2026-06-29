@@ -13,6 +13,8 @@
 ### 功能
 - 🗺️ 在地圖上標記蘑菇位置並發起揪人
 - 👥 設定蘑菇等級、集合時間、需要人數
+- 📍 距離過濾（1 / 5 / 10 / 50 km），只顯示真正附近的活動
+- 📋 活動列表，點一下快速跳轉查看詳情
 - 🔗 每個活動有獨立分享連結，可貼到 LINE 群組
 - 🧭 一鍵跳轉 Google Maps 導航到蘑菇位置
 - ⏰ 過了集合時間自動關閉活動
@@ -23,10 +25,10 @@
 
 ### 使用方式
 1. 打開 App，允許定位
-2. 點右上角「發起揪人」
-3. 點地圖上蘑菇的位置
-4. 填入暱稱、蘑菇等級、集合時間
-5. 發布後分享連結給朋友，或讓附近玩家在地圖上找到並加入
+2. 底部選擇搜尋半徑（預設 10km）
+3. 點右上角「發起揪人」→ 點地圖上蘑菇的位置
+4. 填入暱稱、蘑菇等級、集合時間後發布
+5. 分享連結給朋友，或讓附近玩家在地圖上找到並加入
 
 ---
 
@@ -37,6 +39,8 @@ Find nearby Pikmin Bloom players to beat large mushrooms together.
 ### Features
 - 🗺️ Pin mushroom locations on the map and create a rally
 - 👥 Set mushroom level, meet time, and player count
+- 📍 Distance filter (1 / 5 / 10 / 50 km) — only shows events that are truly nearby
+- 📋 Event list with one-tap to jump to details
 - 🔗 Each event has a shareable link you can send to your group
 - 🧭 One-tap Google Maps navigation to the mushroom location
 - ⏰ Events auto-close after the scheduled time passes
@@ -47,9 +51,9 @@ Find nearby Pikmin Bloom players to beat large mushrooms together.
 
 ### How to use
 1. Open the app and allow location access
-2. Tap "New Rally" in the top right
-3. Tap the mushroom location on the map
-4. Enter your nickname, mushroom level, and meet time
+2. Set your search radius at the bottom (default 10km)
+3. Tap "New Rally" → tap the mushroom location on the map
+4. Enter your nickname, mushroom level, and meet time, then post
 5. Share the link with friends, or let nearby players find it on the map
 
 ---
@@ -61,6 +65,8 @@ Find nearby Pikmin Bloom players to beat large mushrooms together.
 ### 機能
 - 🗺️ 地図でキノコの場所をマークして集合を作成
 - 👥 キノコレベル・集合時間・必要人数を設定
+- 📍 距離フィルター（1 / 5 / 10 / 50 km）— 本当に近くのイベントだけ表示
+- 📋 イベント一覧からワンタップで詳細へ
 - 🔗 各イベントに共有リンクあり、グループに送れる
 - 🧭 ワンタップで Google マップ案内
 - ⏰ 集合時間を過ぎたイベントは自動終了
@@ -71,9 +77,9 @@ Find nearby Pikmin Bloom players to beat large mushrooms together.
 
 ### 使い方
 1. アプリを開き、位置情報を許可
-2. 右上の「集合を作る」をタップ
-3. 地図でキノコの場所をタップ
-4. ニックネーム・キノコレベル・集合時間を入力
+2. 下部で検索範囲を選択（デフォルト 10km）
+3. 「集合を作る」→ 地図でキノコの場所をタップ
+4. ニックネーム・キノコレベル・集合時間を入力して投稿
 5. リンクを友達に送るか、近くのプレイヤーが地図で見つけるのを待つ
 
 ---
