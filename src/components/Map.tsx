@@ -6,6 +6,7 @@ import type { MushroomEvent } from '@/types'
 type LeafletMap = {
   remove: () => void
   containerPointToLatLng: (point: [number, number]) => { lat: number; lng: number }
+  setView: (center: [number, number], zoom?: number) => void
 }
 
 type Props = {
@@ -22,6 +23,12 @@ export default function Map({ events, center, onEventClick, onReady }: Props) {
   const onEventClickRef = useRef(onEventClick)
 
   useEffect(() => { onEventClickRef.current = onEventClick }, [onEventClick])
+
+  useEffect(() => {
+    if (mapInstanceRef.current) {
+      mapInstanceRef.current.setView(center, 15)
+    }
+  }, [center])
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return
