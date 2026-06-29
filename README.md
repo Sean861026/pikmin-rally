@@ -111,6 +111,10 @@ Run `supabase-schema.sql` in Supabase SQL Editor to set up the database.
 
 ## Changelog
 
+### v1.6.0 — 2026-06-29
+- 🔵 Blue dot on map shows your current GPS position
+- 🛰️ GPS now forces fresh readings (`maximumAge: 0`) for better accuracy
+
 ### v1.5.0 — 2026-06-29
 - 🌐 Shareable event page (`/event/[id]`) now fully multilingual
 - 🚫 Prevent duplicate joins — same nickname can't join twice
