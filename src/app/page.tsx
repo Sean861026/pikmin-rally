@@ -8,6 +8,7 @@ import CreateEventModal from '@/components/CreateEventModal'
 import EventDetailModal from '@/components/EventDetailModal'
 import { useLang } from '@/lib/LangContext'
 import { t } from '@/lib/i18n'
+import { haversine } from '@/lib/distance'
 
 type LeafletMap = {
   remove: () => void
@@ -28,6 +29,8 @@ export default function Home() {
   const [createPos, setCreatePos] = useState<{ lat: number; lng: number } | null>(null)
   const [selectedEvent, setSelectedEvent] = useState<MushroomEvent | null>(null)
   const [loading, setLoading] = useState(false)
+  const [radius, setRadius] = useState(10)
+  const userLocationRef = useRef<[number, number] | null>(null)
   const mapInstanceRef = useRef<LeafletMap | null>(null)
 
   const fetchEvents = useCallback(async () => {
@@ -60,9 +63,15 @@ export default function Home() {
   useEffect(() => {
     fetchEvents()
     navigator.geolocation?.getCurrentPosition((pos) => {
-      setCenter([pos.coords.latitude, pos.coords.longitude])
+      const loc: [number, number] = [pos.coords.latitude, pos.coords.longitude]
+      setCenter(loc)
+      userLocationRef.current = loc
     })
   }, [fetchEvents])
+
+  const filteredEvents = userLocationRef.current
+    ? events.filter((ev) => haversine(userLocationRef.current![0], userLocationRef.current![1], ev.lat, ev.lng) <= radius)
+    : events
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const map = mapInstanceRef.current
@@ -118,7 +127,7 @@ export default function Home() {
 
       <div className="flex-1 relative">
         <Map
-          events={events}
+          events={filteredEvents}
           center={center}
           onEventClick={setSelectedEvent}
           onReady={(map) => { mapInstanceRef.current = map }}
@@ -145,15 +154,27 @@ export default function Home() {
           GitHub
         </a>
 
-        {events.length > 0 && !pickingLocation && (
-          <button
-            onClick={() => setShowList(true)}
-            className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white shadow-lg rounded-full px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 transition"
-            style={{ zIndex: 500 }}
-          >
-            <span className="font-bold text-green-600">{T.nearbyEvents(events.length)}</span>
-            <span className="ml-1 text-gray-400">↑</span>
-          </button>
+        {!pickingLocation && (
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2" style={{ zIndex: 500 }}>
+            <select
+              value={radius}
+              onChange={(e) => setRadius(Number(e.target.value))}
+              className="bg-white shadow-lg rounded-full px-3 py-2 text-xs text-gray-600 border-none outline-none cursor-pointer"
+            >
+              {[1, 5, 10, 50].map((km) => (
+                <option key={km} value={km}>{km} km</option>
+              ))}
+            </select>
+            <button
+              onClick={() => setShowList(true)}
+              className="bg-white shadow-lg rounded-full px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 transition"
+            >
+              {filteredEvents.length > 0
+                ? <><span className="font-bold text-green-600">{T.nearbyEvents(filteredEvents.length, radius)}</span><span className="ml-1 text-gray-400">↑</span></>
+                : <span className="text-gray-400">{T.noEvents(radius)}</span>
+              }
+            </button>
+          </div>
         )}
       </div>
 
@@ -162,11 +183,11 @@ export default function Home() {
           <div className="absolute inset-0 bg-black/40" onClick={() => setShowList(false)} />
           <div className="relative bg-white rounded-t-2xl max-h-[70vh] flex flex-col" style={{ color: '#111' }}>
             <div className="flex items-center justify-between px-5 pt-4 pb-2 border-b">
-              <h2 className="font-bold text-base">{T.nearbyEvents(events.length)}</h2>
+              <h2 className="font-bold text-base">{T.nearbyEvents(filteredEvents.length, radius)}</h2>
               <button onClick={() => setShowList(false)} className="text-gray-400 hover:text-gray-700 text-xl leading-none">✕</button>
             </div>
             <ul className="overflow-y-auto divide-y">
-              {events.map((event) => {
+              {filteredEvents.map((event) => {
                 const levelColors: Record<number, string> = {
                   1: 'bg-green-100 text-green-700',
                   2: 'bg-yellow-100 text-yellow-700',
