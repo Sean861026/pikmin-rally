@@ -51,3 +51,9 @@ npm run dev
 ## Supabase 設定
 
 在 Supabase SQL Editor 執行 `supabase-schema.sql` 建立資料表。
+
+## 支持開發者
+
+如果這個 App 對你有幫助，歡迎請我喝杯咖啡 ☕
+
+[![Donate with PayPal](https://img.shields.io/badge/Donate-PayPal-blue?logo=paypal)](https://paypal.me/SeanSHHung)
