@@ -6,6 +6,8 @@ import { MapPin, RefreshCw } from 'lucide-react'
 import type { MushroomEvent } from '@/types'
 import CreateEventModal from '@/components/CreateEventModal'
 import EventDetailModal from '@/components/EventDetailModal'
+import { useLang } from '@/lib/LangContext'
+import { t } from '@/lib/i18n'
 
 type LeafletMap = {
   remove: () => void
@@ -17,6 +19,8 @@ const Map = dynamic(() => import('@/components/Map'), { ssr: false })
 const DEFAULT_CENTER: [number, number] = [25.0478, 121.5318]
 
 export default function Home() {
+  const { lang, toggle } = useLang()
+  const T = t[lang]
   const [center, setCenter] = useState<[number, number]>(DEFAULT_CENTER)
   const [events, setEvents] = useState<MushroomEvent[]>([])
   const [pickingLocation, setPickingLocation] = useState(false)
@@ -29,7 +33,6 @@ export default function Home() {
     setLoading(true)
     try {
       const { supabase } = await import('@/lib/supabase')
-      // 把已過期的活動標為 done
       await supabase
         .from('mushroom_events')
         .update({ status: 'done' })
@@ -77,34 +80,36 @@ export default function Home() {
         <div className="flex items-center gap-2">
           <span className="text-2xl">🍄</span>
           <div>
-            <h1 className="font-bold text-base leading-tight">皮克敏揪人</h1>
-            <p className="text-xs text-green-200">找附近的玩家一起打蘑菇</p>
+            <h1 className="font-bold text-base leading-tight">{T.appName}</h1>
+            <p className="text-xs text-green-200">{T.appDesc}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={fetchEvents}
-            className="p-2 rounded-full hover:bg-green-500 transition"
+            onClick={toggle}
+            className="px-2 py-1 rounded-full text-xs font-medium bg-green-500 hover:bg-green-400 transition"
+            title="切換語言 / Switch language"
           >
+            {lang === 'zh' ? 'EN' : '中文'}
+          </button>
+          <button onClick={fetchEvents} className="p-2 rounded-full hover:bg-green-500 transition">
             <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
           </button>
           <button
             onClick={() => setPickingLocation((v) => !v)}
             className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium transition ${
-              pickingLocation
-                ? 'bg-white text-green-700'
-                : 'bg-green-500 hover:bg-green-400 text-white'
+              pickingLocation ? 'bg-white text-green-700' : 'bg-green-500 hover:bg-green-400 text-white'
             }`}
           >
             <MapPin size={14} />
-            {pickingLocation ? '點地圖選位置' : '發起揪人'}
+            {pickingLocation ? T.pickLocation : T.createEvent}
           </button>
         </div>
       </header>
 
       {pickingLocation && (
         <div className="bg-yellow-50 border-b border-yellow-200 px-4 py-2 text-sm text-yellow-700 text-center" style={{ zIndex: 1000 }}>
-          點選地圖上蘑菇的位置
+          {T.pickHint}
         </div>
       )}
 
@@ -116,7 +121,6 @@ export default function Home() {
           onReady={(map) => { mapInstanceRef.current = map }}
         />
 
-        {/* 選位置用的透明 overlay，蓋在地圖上 */}
         {pickingLocation && (
           <div
             className="absolute inset-0 cursor-crosshair"
@@ -140,7 +144,7 @@ export default function Home() {
 
         {events.length > 0 && !pickingLocation && (
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white shadow-lg rounded-full px-4 py-2 text-sm text-gray-600" style={{ zIndex: 500 }}>
-            附近有 <span className="font-bold text-green-600">{events.length}</span> 個揪人活動
+            <span className="font-bold text-green-600">{T.nearbyEvents(events.length)}</span>
           </div>
         )}
       </div>
@@ -150,10 +154,7 @@ export default function Home() {
           lat={createPos.lat}
           lng={createPos.lng}
           onClose={() => setCreatePos(null)}
-          onCreated={() => {
-            setCreatePos(null)
-            fetchEvents()
-          }}
+          onCreated={() => { setCreatePos(null); fetchEvents() }}
         />
       )}
       {selectedEvent && (

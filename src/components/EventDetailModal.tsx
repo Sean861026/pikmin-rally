@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { X, Users, Clock, MapPin, Share2, Navigation } from 'lucide-react'
 import type { MushroomEvent, EventJoin } from '@/types'
+import { useLang } from '@/lib/LangContext'
+import { t } from '@/lib/i18n'
 
 type Props = {
   event: MushroomEvent
@@ -20,6 +22,8 @@ const levelColors: Record<number, string> = {
 }
 
 export default function EventDetailModal({ event, onClose, onUpdated }: Props) {
+  const { lang } = useLang()
+  const T = t[lang]
   const [joins, setJoins] = useState<EventJoin[]>([])
   const [nickname, setNickname] = useState('')
   const [loading, setLoading] = useState(false)
@@ -54,7 +58,7 @@ export default function EventDetailModal({ event, onClose, onUpdated }: Props) {
       onUpdated()
       onClose()
     } catch {
-      alert('加入失敗，請稍後再試')
+      alert(T.joinFailed)
     } finally {
       setLoading(false)
     }
@@ -70,21 +74,16 @@ export default function EventDetailModal({ event, onClose, onUpdated }: Props) {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <span className={`text-sm font-bold px-2 py-0.5 rounded-full ${levelColors[event.mushroom_level] ?? 'bg-gray-100 text-gray-700'}`}>
-              Lv {event.mushroom_level} 蘑菇
+              Lv {event.mushroom_level}
             </span>
             <span className={`text-xs px-2 py-0.5 rounded-full ${isFull ? 'bg-orange-100 text-orange-600' : 'bg-green-100 text-green-600'}`}>
-              {isFull ? '已滿' : `還差 ${spotsLeft} 人`}
+              {isFull ? T.full : T.spotsLeft(spotsLeft)}
             </span>
           </div>
           <div className="flex items-center gap-2">
             <button
-              onClick={() => {
-                const url = `${window.location.origin}/event/${event.id}`
-                navigator.clipboard.writeText(url)
-                alert('連結已複製！')
-              }}
+              onClick={() => { navigator.clipboard.writeText(`${window.location.origin}/event/${event.id}`); alert(T.copyLink) }}
               className="p-1.5 rounded-full hover:bg-gray-100"
-              title="複製分享連結"
             >
               <Share2 size={16} className="text-gray-500" />
             </button>
@@ -94,16 +93,16 @@ export default function EventDetailModal({ event, onClose, onUpdated }: Props) {
 
         <div className="space-y-2 mb-4">
           <div className="flex items-center gap-2 text-sm text-gray-900">
-            <Clock size={14} />
+            <Clock size={14} className="text-gray-400" />
             <span>{localTime}</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-gray-900">
-            <Users size={14} />
-            <span>發起人：{event.creator_nickname}｜{joins.length}/{event.max_players} 人</span>
+            <Users size={14} className="text-gray-400" />
+            <span>{T.organizer}：{event.creator_nickname}｜{joins.length}/{event.max_players}</span>
           </div>
           {event.note && (
             <div className="flex items-center gap-2 text-sm text-gray-900">
-              <MapPin size={14} />
+              <MapPin size={14} className="text-gray-400" />
               <span>{event.note}</span>
             </div>
           )}
@@ -111,7 +110,7 @@ export default function EventDetailModal({ event, onClose, onUpdated }: Props) {
 
         {joins.length > 0 && (
           <div className="mb-4">
-            <p className="text-xs text-gray-400 mb-1">已加入的玩家</p>
+            <p className="text-xs text-gray-400 mb-1">{T.joinedPlayers}</p>
             <div className="flex flex-wrap gap-1">
               {joins.map((j) => (
                 <span key={j.id} className="bg-green-50 text-green-700 text-xs px-2 py-0.5 rounded-full">
@@ -129,14 +128,14 @@ export default function EventDetailModal({ event, onClose, onUpdated }: Props) {
           className="flex items-center justify-center gap-2 w-full border border-green-500 text-green-600 font-medium py-2 rounded-xl text-sm hover:bg-green-50 transition mb-3"
         >
           <Navigation size={14} />
-          用 Google Maps 導航
+          {T.navigate}
         </a>
 
         {!isFull && (
           <form onSubmit={handleJoin} className="flex gap-2">
             <input
               className="flex-1 border rounded-lg px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400"
-              placeholder="輸入你的暱稱加入"
+              placeholder={T.joinPlaceholder}
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
               required
@@ -146,7 +145,7 @@ export default function EventDetailModal({ event, onClose, onUpdated }: Props) {
               disabled={loading}
               className="bg-green-500 hover:bg-green-600 text-white font-bold px-4 py-2 rounded-xl disabled:opacity-50 text-sm"
             >
-              {loading ? '...' : '加入'}
+              {loading ? T.joining : T.join}
             </button>
           </form>
         )}
