@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { X, Users, Clock, MapPin, Share2 } from 'lucide-react'
+import { X, Users, Clock, MapPin, Share2, Navigation } from 'lucide-react'
 import type { MushroomEvent, EventJoin } from '@/types'
 
 type Props = {
@@ -121,6 +121,16 @@ export default function EventDetailModal({ event, onClose, onUpdated }: Props) {
             </div>
           </div>
         )}
+
+        <a
+          href={`https://maps.google.com/?q=${event.lat},${event.lng}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-2 w-full border border-green-500 text-green-600 font-medium py-2 rounded-xl text-sm hover:bg-green-50 transition mb-3"
+        >
+          <Navigation size={14} />
+          用 Google Maps 導航
+        </a>
 
         {!isFull && (
           <form onSubmit={handleJoin} className="flex gap-2">

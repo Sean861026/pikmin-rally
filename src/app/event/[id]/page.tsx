@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { Clock, Users, MapPin, ArrowLeft, Share2 } from 'lucide-react'
+import { Clock, Users, MapPin, ArrowLeft, Share2, Navigation } from 'lucide-react'
 import type { MushroomEvent, EventJoin } from '@/types'
 
 const levelColors: Record<number, string> = {
@@ -142,6 +142,16 @@ export default function EventPage() {
             </div>
           </div>
         )}
+
+        <a
+          href={`https://maps.google.com/?q=${event.lat},${event.lng}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-2 bg-white rounded-2xl p-4 shadow-sm text-green-600 font-medium text-sm hover:bg-green-50 transition"
+        >
+          <Navigation size={16} />
+          用 Google Maps 導航到蘑菇位置
+        </a>
 
         {!isFull && event.status !== 'done' && (
           <div className="bg-white rounded-2xl p-5 shadow-sm">
