@@ -109,6 +109,36 @@ npm run dev
 
 Run `supabase-schema.sql` in Supabase SQL Editor to set up the database.
 
+## Changelog
+
+### v1.4.0 — 2026-06-29
+- 📍 Distance filter (1 / 5 / 10 / 50 km) — show only truly nearby events
+- 📋 Event list bottom sheet for quick navigation
+
+### v1.3.0 — 2026-06-29
+- 🌐 Added Japanese (日本語) language support
+- 🌐 Language switcher changed to dropdown for clarity
+- ⏰ Timezone displayed alongside event time
+
+### v1.2.0 — 2026-06-29
+- 🔗 Shareable link for each event (`/event/[id]`)
+- ⏰ Expired events auto-close on page load
+- 📱 PWA support — installable to home screen
+- 🧭 Google Maps navigation button on event detail
+
+### v1.1.0 — 2026-06-29
+- 🌐 Multilingual UI (繁體中文 / English)
+- 🐛 Fixed modal z-index issue (covered by map)
+- 🐛 Fixed map click coordinate conversion
+
+### v1.0.0 — 2026-06-29
+- 🎉 Initial release
+- 🗺️ Map with mushroom event pins (Leaflet + OpenStreetMap)
+- 👥 Create and join rally events
+- 🔓 Anonymous, no login required
+
+---
+
 ## Support / 支持 / サポート
 
 ☕ If this app helped you, feel free to buy me a coffee!
