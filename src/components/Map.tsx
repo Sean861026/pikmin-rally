@@ -12,14 +12,16 @@ type LeafletMap = {
 type Props = {
   events: MushroomEvent[]
   center: [number, number]
+  userLocation: [number, number] | null
   onEventClick: (event: MushroomEvent) => void
   onReady: (map: LeafletMap) => void
 }
 
-export default function Map({ events, center, onEventClick, onReady }: Props) {
+export default function Map({ events, center, userLocation, onEventClick, onReady }: Props) {
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<LeafletMap | null>(null)
   const markersRef = useRef<unknown[]>([])
+  const userMarkerRef = useRef<unknown>(null)
   const onEventClickRef = useRef(onEventClick)
 
   useEffect(() => { onEventClickRef.current = onEventClick }, [onEventClick])
@@ -29,6 +31,25 @@ export default function Map({ events, center, onEventClick, onReady }: Props) {
       mapInstanceRef.current.setView(center, 15)
     }
   }, [center])
+
+  useEffect(() => {
+    if (!mapInstanceRef.current || !userLocation) return
+    const updateUserMarker = async () => {
+      const L = (await import('leaflet')).default
+      const map = mapInstanceRef.current as unknown as ReturnType<typeof L.map>
+      if (userMarkerRef.current) {
+        (userMarkerRef.current as ReturnType<typeof L.marker>).remove()
+      }
+      const icon = L.divIcon({
+        html: `<div style="width:16px;height:16px;border-radius:50%;background:#3b82f6;border:3px solid white;box-shadow:0 0 0 3px rgba(59,130,246,0.3)"></div>`,
+        className: '',
+        iconSize: [16, 16],
+        iconAnchor: [8, 8],
+      })
+      userMarkerRef.current = L.marker(userLocation, { icon, zIndexOffset: -100 }).addTo(map)
+    }
+    updateUserMarker()
+  }, [userLocation])
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return

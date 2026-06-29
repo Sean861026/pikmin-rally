@@ -32,6 +32,7 @@ export default function Home() {
   const [radius, setRadius] = useState(10)
   const userLocationRef = useRef<[number, number] | null>(null)
   const mapInstanceRef = useRef<LeafletMap | null>(null)
+  const [userLocation, setUserLocation] = useState<[number, number] | null>(null)
 
   const fetchEvents = useCallback(async () => {
     setLoading(true)
@@ -65,16 +66,18 @@ export default function Home() {
     navigator.geolocation?.getCurrentPosition((pos) => {
       const loc: [number, number] = [pos.coords.latitude, pos.coords.longitude]
       setCenter(loc)
+      setUserLocation(loc)
       userLocationRef.current = loc
-    })
+    }, undefined, { enableHighAccuracy: true })
   }, [fetchEvents])
 
   const handleLocateMe = () => {
     navigator.geolocation?.getCurrentPosition((pos) => {
       const loc: [number, number] = [pos.coords.latitude, pos.coords.longitude]
       userLocationRef.current = loc
+      setUserLocation(loc)
       setCenter(loc)
-    })
+    }, undefined, { enableHighAccuracy: true })
   }
 
   const filteredEvents = userLocationRef.current
@@ -140,6 +143,7 @@ export default function Home() {
         <Map
           events={filteredEvents}
           center={center}
+          userLocation={userLocation}
           onEventClick={setSelectedEvent}
           onReady={(map) => { mapInstanceRef.current = map }}
         />
