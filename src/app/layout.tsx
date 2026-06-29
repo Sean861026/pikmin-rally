@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { LangProvider } from "@/lib/LangContext";
 import "./globals.css";
@@ -17,12 +17,15 @@ export const metadata: Metadata = {
   title: "皮克敏揪人 | Pikmin Rally",
   description: "找附近的 Pikmin Bloom 玩家一起打大型蘑菇",
   manifest: "/manifest.json",
-  themeColor: "#16a34a",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
     title: "皮克敏揪人",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#16a34a",
 };
 
 export default function RootLayout({
