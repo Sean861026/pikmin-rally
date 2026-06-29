@@ -111,6 +111,13 @@ Run `supabase-schema.sql` in Supabase SQL Editor to set up the database.
 
 ## Changelog
 
+### v1.5.0 — 2026-06-29
+- 🌐 Shareable event page (`/event/[id]`) now fully multilingual
+- 🚫 Prevent duplicate joins — same nickname can't join twice
+- 📏 Distance shown per event in the list
+- 📍 Locate me button in header — re-centers map to current GPS position
+- 🌐 `players` count and all hardcoded strings moved to i18n
+
 ### v1.4.0 — 2026-06-29
 - 📍 Distance filter (1 / 5 / 10 / 50 km) — show only truly nearby events
 - 📋 Event list bottom sheet for quick navigation
