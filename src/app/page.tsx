@@ -68,7 +68,7 @@ export default function Home() {
       setCenter(loc)
       setUserLocation(loc)
       userLocationRef.current = loc
-    }, undefined, { enableHighAccuracy: true })
+    }, undefined, { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 })
   }, [fetchEvents])
 
   const handleLocateMe = () => {
@@ -77,7 +77,7 @@ export default function Home() {
       userLocationRef.current = loc
       setUserLocation(loc)
       setCenter(loc)
-    }, undefined, { enableHighAccuracy: true })
+    }, undefined, { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 })
   }
 
   const filteredEvents = userLocationRef.current
