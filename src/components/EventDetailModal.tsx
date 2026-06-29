@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { X, Users, Clock, MapPin } from 'lucide-react'
+import { X, Users, Clock, MapPin, Share2 } from 'lucide-react'
 import type { MushroomEvent, EventJoin } from '@/types'
 
 type Props = {
@@ -76,7 +76,20 @@ export default function EventDetailModal({ event, onClose, onUpdated }: Props) {
               {isFull ? '已滿' : `還差 ${spotsLeft} 人`}
             </span>
           </div>
-          <button onClick={onClose}><X size={20} /></button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                const url = `${window.location.origin}/event/${event.id}`
+                navigator.clipboard.writeText(url)
+                alert('連結已複製！')
+              }}
+              className="p-1.5 rounded-full hover:bg-gray-100"
+              title="複製分享連結"
+            >
+              <Share2 size={16} className="text-gray-500" />
+            </button>
+            <button onClick={onClose}><X size={20} /></button>
+          </div>
         </div>
 
         <div className="space-y-2 mb-4">

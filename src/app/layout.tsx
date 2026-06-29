@@ -14,7 +14,14 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "皮克敏揪人",
-  description: "找附近的玩家一起打大型蘑菇",
+  description: "找附近的 Pikmin Bloom 玩家一起打大型蘑菇",
+  manifest: "/manifest.json",
+  themeColor: "#16a34a",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "皮克敏揪人",
+  },
 };
 
 export default function RootLayout({

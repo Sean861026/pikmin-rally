@@ -29,6 +29,12 @@ export default function Home() {
     setLoading(true)
     try {
       const { supabase } = await import('@/lib/supabase')
+      // 把已過期的活動標為 done
+      await supabase
+        .from('mushroom_events')
+        .update({ status: 'done' })
+        .lt('scheduled_at', new Date().toISOString())
+        .neq('status', 'done')
       const { data } = await supabase
         .from('mushroom_events')
         .select(`*, join_count:event_joins(count)`)

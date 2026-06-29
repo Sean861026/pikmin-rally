@@ -1,0 +1,21 @@
+{
+  "name": "皮克敏揪人",
+  "short_name": "揪人",
+  "description": "找附近的 Pikmin Bloom 玩家一起打大型蘑菇",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#16a34a",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
